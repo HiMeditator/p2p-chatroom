@@ -14,10 +14,10 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import type { ChatLog } from '@/types';
+import type { DialogItem } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
-defineProps<{ dialog: ChatLog }>();
+defineProps<{ dialog: DialogItem }>();
 </script>
 
 <style scoped>

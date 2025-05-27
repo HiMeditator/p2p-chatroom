@@ -3,7 +3,7 @@
   <div>
     <a-row>
       <a-col :span="4">
-        <a-statistic title="连接数量" :value="0" />
+        <a-statistic title="连接数量" :value="connectList.length" />
       </a-col>
       <a-col :span="20">
         <a-statistic title="Peer ID" :value="peerID" />
@@ -21,7 +21,10 @@
       <span v-if="!name.trim()">{{ "名称不能为空" }}</span>
     </div>
     <div class="input-item">
-      <a-button type="primary" class="add-user">添加用户</a-button>
+      <a-button
+        type="primary" :disabled="userPeerID ? !name.trim() : true"
+        class="add-user" @click="addUser"
+      >添加用户</a-button>
       <a-input
         class="input-id"
         v-model:value="userPeerID" placeholder="用户 Peer ID"
@@ -35,9 +38,18 @@
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePeerStore } from '@/stores/peer'
+import { useConnectionStore } from '@/stores/connection'
 
-const {peerID, name}  = storeToRefs(usePeerStore())
+const { peerID, name }  = storeToRefs(usePeerStore())
 const userPeerID = ref('')
+const { connectList } = storeToRefs(useConnectionStore())
+
+function addUser() {
+  if (userPeerID.value) {
+    usePeerStore().connect(userPeerID.value)
+    userPeerID.value = ''
+  }
+}
 </script>
 
 <style scoped>

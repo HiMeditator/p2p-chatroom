@@ -3,7 +3,7 @@
     <div class="dropup-box">
       <div class="dropup-option" v-if="displayContext">
         <ul class="dropup-list">
-          <span v-for="(conn, index) in connectionList" :key="conn.id">
+          <span v-for="(conn, index) in connectList" :key="conn.id">
             <li
               v-show="!conn.selected && conn.name.includes(search)"
               @click="conn.selected = !conn.selected"
@@ -13,8 +13,8 @@
               <sub style="line-height: 1.5em;">{{ conn.id }}</sub>
             </li>
           </span>
-          <li v-show="!connectionList.length">
-            <sub>暂无连接用户...</sub>
+          <li v-show="!connectList.length">
+            <sub style="line-height: 1.5em;">暂无连接用户</sub>
           </li>
         </ul>
         <div class="dropup-input">
@@ -32,7 +32,7 @@
         <span>选择发送用户</span>
       </div>
     </div>
-    <div v-for="(conn, path) in connectionList" :key="conn.id">
+    <div v-for="(conn, path) in connectList" :key="conn.id">
       <div class="add-user" v-show="conn.selected">
         <span @click="conn.selected = !conn.selected">{{ conn.name }}</span>
       </div>
@@ -43,18 +43,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useConnectionStore } from '../../stores/connection'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 const displayContext = ref(false)
 const search = ref('')
 
-const connectionList = ref<any>()
-connectionList.value = [
-  {name: 'Jack', id: '0001', selected: false},
-  {name: 'Tom', id: '0002', selected: false},
-  {name: 'Jerry', id: '0003', selected: false},
-]
+const connectionStore = useConnectionStore()
+const { connectList } = storeToRefs(connectionStore)
 
 function getContext() {
   displayContext.value = !displayContext.value

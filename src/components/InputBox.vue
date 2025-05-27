@@ -14,10 +14,14 @@
 <script setup lang="ts">
 import autosize from 'autosize'
 import { ref, onMounted } from 'vue'
+import { useDialogStore } from '@/stores/dialog'
+import { useConnectionStore } from '@/stores/connection'
 import { storeToRefs } from 'pinia'
 import InputUpper from './input/InputUpper.vue'
 import InputLower from './input/InputLower.vue'
 
+const dialogStore = useDialogStore()
+const { dialog } = storeToRefs(dialogStore)
 const taInput = ref<HTMLTextAreaElement>()
 
 function handleKeydown(e: KeyboardEvent) {
@@ -30,7 +34,7 @@ function sendMessage() {
   if(taInput.value) {
     const content = taInput.value.value;
     if (content.trim()) {
-      // TODO: send message
+      useConnectionStore().sendMessage(content)
       taInput.value.value = '';
       taInput.value.style.height = 'auto';
     }
