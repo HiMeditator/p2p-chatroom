@@ -5,12 +5,12 @@
         <ul class="dropup-list">
           <span v-for="(conn, index) in connectionList" :key="conn.id">
             <li
-              v-show="!conn.selected"
+              v-show="!conn.selected && conn.name.includes(search)"
               @click="conn.selected = !conn.selected"
               :class="{ selected: conn.selected }"
             >
               <span>{{ conn.name || 'unnamed' }}</span>
-              <sub>{{ conn.id }}</sub>
+              <sub style="line-height: 1.5em;">{{ conn.id }}</sub>
             </li>
           </span>
           <li v-show="!connectionList.length">
@@ -27,13 +27,13 @@
         </div>
       </div>
 
-      <div class="add-context" @click="getContext">
+      <div class="add-user" @click="getContext">
         <FontAwesomeIcon :icon="faPlus" />
         <span>选择发送用户</span>
       </div>
     </div>
     <div v-for="(conn, path) in connectionList" :key="conn.id">
-      <div class="selected-context" v-show="conn.selected">
+      <div class="add-user" v-show="conn.selected">
         <span @click="conn.selected = !conn.selected">{{ conn.name }}</span>
       </div>
     </div>
@@ -44,7 +44,7 @@
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faPause, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 const displayContext = ref(false)
 const search = ref('')
@@ -97,8 +97,7 @@ document.addEventListener('click', (e) => {
   outline: none;
 }
 
-.add-context,
-.stop-generation {
+.add-user {
   user-select: none;
   display: inline-block;
   padding: 2px 4px;
@@ -107,23 +106,16 @@ document.addEventListener('click', (e) => {
   background-color: rgba(128, 128, 128, 0.1);
 }
 
-.stop-generation svg,
-.add-context svg {
+.add-user svg {
   margin-left: 2px;
   margin-right: 3px;
 }
 
-.stop-generation:hover,
-.add-context:hover {
+.add-user:hover {
   background-color: rgba(128, 128, 128, 0.2);
 }
 
-
-/* .dropup-option {
-  box-shadow: 0 0 4px 2px rgba(128, 128, 128, 0.4);
-} */
-
-.selected-context {
+.add-user {
   user-select: none;
   border-radius: 5px;
   padding: 2px 4px;
@@ -133,7 +125,7 @@ document.addEventListener('click', (e) => {
   background-color: rgba(128, 128, 128, 0.1);
 }
 
-.selected-context:hover {
+.add-user:hover {
   cursor: pointer;
   background-color: rgba(128, 128, 128, 0.2);
 }

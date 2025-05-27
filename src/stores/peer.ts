@@ -1,12 +1,14 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { Peer, DataConnection } from 'peerjs'
+import { Peer } from 'peerjs'
+import type { DataConnection } from 'peerjs';
 import { useChatStore } from './chat'
 import { nanoid } from 'nanoid'
 import type { ChatData } from '@/types'
 
 export const usePeerStore = defineStore('peer', () => {
   const peer = new Peer();
+  const name = ref('');
   const peerID = ref('');
   const connectList = ref<DataConnection[]>([]);
 
@@ -45,6 +47,7 @@ export const usePeerStore = defineStore('peer', () => {
 
   return {
     peerID,
+    name,
     connectList,
     connect,
     sendContent

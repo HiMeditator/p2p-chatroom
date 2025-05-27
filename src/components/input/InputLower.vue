@@ -1,7 +1,7 @@
 <template>
   <div class="input-lower">
     <div></div>
-    <div class="send-prompt" @click="sendMessage">
+    <div class="send-message" @click="sendMessage">
       <span>Ctrl+Enter</span>
       <FontAwesomeIcon :icon="faArrowRight" />
     </div>
@@ -32,7 +32,7 @@ svg {
   margin-left: 5px;
 }
 
-.send-prompt {
+.send-message {
   user-select: none;
   cursor: pointer;
   max-width: 30vw;
@@ -41,7 +41,7 @@ svg {
   text-overflow: ellipsis;
 }
 
-.send-prompt:hover {
+.send-message:hover {
   color: var(--vscode-foreground, #616161);
 }
 </style>

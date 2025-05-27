@@ -1,12 +1,13 @@
 export interface ChatLog {
     me: boolean,
-    name?: string,
+    name: string,
     peerID: string,
     contentID: string,
     content: string
 }
 
 export interface ChatData {
-    name?: string,
-    content: string
+    name: string,
+    content: string,
+    time: string
 }

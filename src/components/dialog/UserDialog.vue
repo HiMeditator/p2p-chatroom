@@ -1,10 +1,10 @@
 <template>
-  <div class="user-dialog">
-    <div class="user-info">
+  <div :class="[dialog.me ? 'user-dialog-me' : 'user-dialog']">
+    <div class="user-info" v-if="!dialog.me">
       <div class="user-head">
         <FontAwesomeIcon :icon="faUser" />
       </div>
-      <div class="user-name">User</div>
+      <div class="user-name">{{ dialog.name }}</div>
     </div>
     <div class="user-content">
       <div class="dialog-content">{{ dialog.content.trim() }}</div>
@@ -28,10 +28,26 @@ defineProps<{ dialog: ChatLog }>();
   background-color: rgba(128, 128, 128, 0.05);
   border-radius: 10px;
   border: 1px solid rgba(128, 128, 128, 0.1);
+  width: 75%;
+}
+
+.user-dialog-me {
+  margin: 10px;
+  padding: 10px;
+  color: var(--vscode-foreground, #616161);
+  background-color: rgba(0, 128, 0, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 128, 0, 0.1);
+  width: 75%;
+  margin-left: calc(25% - 10px);
 }
 
 .user-dialog:hover {
   background-color: rgba(128, 128, 128, 0.1);
+}
+
+.user-dialog-me:hover {
+  background-color: rgba(0, 128, 0, 0.1);
 }
 
 .user-info {
@@ -49,7 +65,7 @@ defineProps<{ dialog: ChatLog }>();
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: blueviolet;
+  background-color: cornflowerblue;
 }
 
 .user-name {

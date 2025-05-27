@@ -16,6 +16,7 @@ import InputBox from '../components/InputBox.vue'
   display: flex;
   flex-direction: column;
   height: 100vh;
+  border-right: 1px solid rgba(128, 128, 128, 0.4);
 }
 
 .dialog-box {

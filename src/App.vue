@@ -1,9 +1,9 @@
 <template>
   <a-row>
-    <a-col span="8">
+    <a-col span="9">
       <ChatView />
     </a-col>
-    <a-col span="16">
+    <a-col span="15">
       <UtilsView />
     </a-col>
   </a-row>
