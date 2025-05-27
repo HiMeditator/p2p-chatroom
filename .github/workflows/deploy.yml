@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,14 +20,20 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Clean install dependencies
+        run: |
+          rm -rf node_modules
+          npm ci
 
       - name: Build
         run: npm run build
 
+      - name: List build output
+        run: ls -la dist
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist  # 构建输出目录
-          branch: gh-pages  # 部署到 gh-pages 分支 
+          folder: dist
+          branch: gh-pages
+          clean: true 
