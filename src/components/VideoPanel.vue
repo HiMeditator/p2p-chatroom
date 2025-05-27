@@ -78,7 +78,7 @@ async function startCall() {
     localVideo.value.srcObject = localStream
 
     // 发起视频通话
-    peerCall = peerStore.peer.call(selectedPeer.value, localStream)
+    peerCall = peerStore.peer?.call(selectedPeer.value, localStream)
     
     peerCall.on('stream', (stream: MediaStream) => {
       if (remoteVideo.value) {
@@ -129,7 +129,7 @@ function endCall() {
 }
 
 // 监听其他用户的视频通话请求
-peerStore.peer.on('call', (call) => {
+peerStore.peer?.on('call', (call) => {
   if (isCalling.value) {
     call.close()
     return

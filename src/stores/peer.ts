@@ -6,29 +6,37 @@ import { useConnectionStore } from './connection'
 import type { MessageItem } from '@/types'
 
 export const usePeerStore = defineStore('peer', () => {
-  const peer = new Peer();
-  const name = ref('');
-  const peerID = ref('');
+  const peer = ref<Peer | null>(null)
+  const name = ref('')
+  const peerID = ref('')
 
-  peer.on('open', function (id) {
-    peerID.value = id;
-  });
+  function initPeer() {
+    if (peer.value) return
 
-  peer.on('connection', function (conn) {
-    conn.on('data', function (data) {
-      const msgItem = data as MessageItem; 
-      useDialogStore().addDialogItem(false, msgItem);
-    });
-  });
+    peer.value = new Peer()
+    
+    peer.value.on('open', function (id) {
+      peerID.value = id
+    })
+
+    peer.value.on('connection', function (conn) {
+      conn.on('data', function (data) {
+        const msgItem = data as MessageItem
+        useDialogStore().addDialogItem(false, msgItem)
+      })
+    })
+  }
 
   function connect(id: string) {
-    useConnectionStore().connect(id);
+    if (!peer.value) return
+    useConnectionStore().connect(id)
   }
 
   return {
     peer,
     peerID,
     name,
+    initPeer,
     connect
   }
 })

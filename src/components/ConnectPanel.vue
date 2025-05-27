@@ -6,7 +6,7 @@
         <a-statistic title="连接数量" :value="connectList.length" />
       </a-col>
       <a-col :span="20">
-        <a-statistic title="Peer ID" :value="peerID" />
+        <a-statistic title="Peer ID" :value="peerID || '请先创建名称'" />
       </a-col>
     </a-row>
   </div>
@@ -62,6 +62,7 @@ const connCol = [
 function confirmName() {
   if(name.value.trim()){
     nameReady.value = true
+    usePeerStore().initPeer()
   }
 }
 
