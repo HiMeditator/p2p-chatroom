@@ -17,7 +17,7 @@
         placeholder="选择要视频通话的用户"
       >
         <a-select-option v-for="conn in connectList" :key="conn.id" :value="conn.id">
-          {{ conn.name || '未知用户' }}
+          {{ conn.name || '未知用户' }} ({{ conn.id }})
         </a-select-option>
       </a-select>
       <a-button 
@@ -59,6 +59,15 @@ let peerCall: any = null
 
 async function startCall() {
   if (!selectedPeer.value || !localVideo.value || !remoteVideo.value) return
+
+  // 检查是否是同一设备
+  if (selectedPeer.value === peerStore.peerID) {
+    notification.error({
+      message: '无法发起视频通话',
+      description: '不能与自己进行视频通话'
+    })
+    return
+  }
 
   try {
     // 获取本地媒体流
@@ -129,13 +138,18 @@ peerStore.peer.on('call', (call) => {
   notification.info({
     message: '收到视频通话请求',
     description: '是否接受？',
-    btn: h('div', {}, [
+    btn: h('div', { 
+      style: 'display: flex; gap: 8px; margin-top: 8px;' 
+    }, [
       h('a-button', {
         type: 'primary',
-        onClick: () => acceptCall(call)
+        onClick: () => acceptCall(call),
+        style: 'flex: 1; cursor: pointer;'
       }, '接受'),
       h('a-button', {
-        onClick: () => call.close()
+        danger: true,
+        onClick: () => call.close(),
+        style: 'flex: 1; cursor: pointer;'
       }, '拒绝')
     ])
   })
@@ -143,6 +157,16 @@ peerStore.peer.on('call', (call) => {
 
 async function acceptCall(call: any) {
   if (!localVideo.value || !remoteVideo.value) return
+
+  // 检查是否是同一设备
+  if (call.peer === peerStore.peerID) {
+    call.close()
+    notification.error({
+      message: '无法接受视频通话',
+      description: '不能与自己进行视频通话'
+    })
+    return
+  }
 
   try {
     localStream = await navigator.mediaDevices.getUserMedia({ 
