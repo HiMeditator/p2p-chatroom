@@ -15,10 +15,10 @@ import UtilsView from "./views/UtilsView.vue";
 </script>
 
 <style scoped>
-/* @media (max-width: 768px) {
+@media (max-width: 768px) {
   .ant-col {
     flex: 0 0 100%;
     max-width: 100%;
   }
-} */
+}
 </style>

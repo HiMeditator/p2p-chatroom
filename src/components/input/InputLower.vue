@@ -1,6 +1,9 @@
 <template>
   <div class="input-lower">
-    <div></div>
+    <div class="div-btn" @click="useDialogStore().clearDialog">
+      <FontAwesomeIcon :icon="faXmark" />
+      <span>清空聊天</span>
+    </div>
     <div class="send-message" @click="sendMessage">
       <span>Ctrl+Enter</span>
       <FontAwesomeIcon :icon="faArrowRight" />
@@ -11,8 +14,8 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
-
+import { faArrowRight, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { useDialogStore } from '@/stores/dialog'
 defineProps<{
   sendMessage: () => void
 }>()
@@ -29,7 +32,21 @@ defineProps<{
 }
 
 svg {
-  margin-left: 5px;
+  margin: 0 5px;
+}
+
+.div-btn {
+  color: var(--vscode-foreground, #616161);
+  user-select: none;
+  display: inline-block;
+  padding: 0 4px;
+  border-radius: 5px;
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.div-btn:hover {
+  cursor: pointer;
+  background-color: rgba(128, 128, 128, 0.2);
 }
 
 .send-message {

@@ -1,10 +1,23 @@
 <template>
   <div :class="[dialog.me ? 'user-dialog-me' : 'user-dialog']">
-    <div class="user-info" v-if="!dialog.me">
+    <div class="user-info">
       <div class="user-head">
         <FontAwesomeIcon :icon="faUser" />
       </div>
       <div class="user-name">{{ dialog.name }}</div>
+      <a-popover class="dialog-info">
+        <template #content>
+          <div class="extra-info" v-if="!dialog.me">
+            <b>Peer ID</b>&nbsp;
+            <a-tag>{{ dialog.peerID }}</a-tag>
+          </div>
+          <div class="extra-info">
+            <b>Time</b>&nbsp;
+            <a-tag>{{ dialog.time }}</a-tag>
+          </div>
+        </template>
+        <FontAwesomeIcon :icon="faInfo" />
+      </a-popover>
     </div>
     <div class="user-content">
       <div class="dialog-content">{{ dialog.content.trim() }}</div>
@@ -16,7 +29,7 @@
 import { defineProps } from 'vue';
 import type { DialogItem } from '@/types';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faInfo } from '@fortawesome/free-solid-svg-icons'
 defineProps<{ dialog: DialogItem }>();
 </script>
 
@@ -68,6 +81,10 @@ defineProps<{ dialog: DialogItem }>();
   background-color: cornflowerblue;
 }
 
+.user-dialog-me .user-head {
+  background-color: blueviolet;
+}
+
 .user-name {
   display: inline-block;
 }
@@ -79,26 +96,25 @@ defineProps<{ dialog: DialogItem }>();
   scrollbar-width: thin;
 }
 
+.dialog-info {
+  position: absolute;
+  padding: 5px 10px;
+  border-radius: 5px;
+  right: 0;
+  top: 0;
+}
+
 .dialog-content {
   white-space: pre-wrap;
 }
 
-.dialog-context-file{
-  padding-top: 10px;
-  margin-top: 10px;
-  border-top: 1px solid rgba(128, 128, 128, 0.4);
+.sep-div{
+  margin: 10px 0 5px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.4);
 }
 
-.dialog-context-file>span{
-  display: inline-block;
-  padding: 2px 4px;
-  border-radius: 5px;
-  margin: 2px 5px;
-  background-color: rgba(128, 128, 128, 0.1);
-}
-
-.dialog-context-file>span:hover{
-  cursor: pointer;
-  background-color: rgba(128, 128, 128, 0.2);
+.extra-info {
+  font-size: 12px;
+  line-height: 2.2em;
 }
 </style>

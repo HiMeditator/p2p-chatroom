@@ -10,11 +10,11 @@
               :class="{ selected: conn.selected }"
             >
               <span>{{ conn.name || 'unnamed' }}</span>
-              <sub style="line-height: 1.5em;">{{ conn.id }}</sub>
+              <span class="small-text">{{ conn.id }}</span>
             </li>
           </span>
           <li v-show="!connectList.length">
-            <sub style="line-height: 1.5em;">暂无连接用户</sub>
+            <span class="small-text">暂无连接用户</span>
           </li>
         </ul>
         <div class="dropup-input">
@@ -29,10 +29,10 @@
 
       <div class="add-user" @click="getContext">
         <FontAwesomeIcon :icon="faPlus" />
-        <span>选择发送用户</span>
+        <span>发送给特定用户</span>
       </div>
     </div>
-    <div v-for="(conn, path) in connectList" :key="conn.id">
+    <div v-for="(conn, index) in connectList" :key="conn.id">
       <div class="add-user" v-show="conn.selected">
         <span @click="conn.selected = !conn.selected">{{ conn.name }}</span>
       </div>
@@ -67,6 +67,10 @@ document.addEventListener('click', (e) => {
 <style scoped>
 @import '../../assets/css/dropup2.css';
 
+.small-text {
+  font-size: 12px;
+}
+
 .input-upper {
   display: flex;
   align-items: center;
@@ -94,22 +98,9 @@ document.addEventListener('click', (e) => {
   outline: none;
 }
 
-.add-user {
-  user-select: none;
-  display: inline-block;
-  padding: 2px 4px;
-  margin: 5px;
-  border-radius: 5px;
-  background-color: rgba(128, 128, 128, 0.1);
-}
-
 .add-user svg {
   margin-left: 2px;
   margin-right: 3px;
-}
-
-.add-user:hover {
-  background-color: rgba(128, 128, 128, 0.2);
 }
 
 .add-user {
