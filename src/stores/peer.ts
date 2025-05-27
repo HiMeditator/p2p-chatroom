@@ -22,8 +22,19 @@ export const usePeerStore = defineStore('peer', () => {
     peer.value.on('connection', function (conn) {
       conn.on('data', function (data) {
         const msgItem = data as MessageItem
-        useDialogStore().addDialogItem(false, msgItem)
+        if(msgItem.content === '') {
+          console.log(msgItem.peerID, msgItem.name, '收到用户名称信息')
+          useConnectionStore().setConnectName(msgItem.peerID, msgItem.name)
+        }
+        else{
+          useDialogStore().addDialogItem(false, msgItem)
+        }
       })
+    })
+
+    peer.value.on('call', function (call) {
+      const event = new CustomEvent('peer-call', { detail: call })
+      window.dispatchEvent(event)
     })
   }
 

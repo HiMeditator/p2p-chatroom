@@ -57,6 +57,43 @@ const isCalling = ref(false)
 let localStream: MediaStream | null = null
 let peerCall: any = null
 
+// 监听视频通话请求
+onMounted(() => {
+  window.addEventListener('peer-call', handlePeerCall)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('peer-call', handlePeerCall)
+  endCall()
+})
+
+function handlePeerCall(event: Event) {
+  const call = (event as CustomEvent).detail
+  if (isCalling.value) {
+    call.close()
+    return
+  }
+
+  notification.info({
+    message: '收到视频通话请求',
+    description: '是否接受？',
+    btn: h('div', { 
+      style: 'display: flex; gap: 8px; margin-top: 8px;' 
+    }, [
+      h('a-button', {
+        type: 'primary',
+        onClick: () => acceptCall(call),
+        style: 'flex: 1; cursor: pointer;'
+      }, '接受'),
+      h('a-button', {
+        danger: true,
+        onClick: () => call.close(),
+        style: 'flex: 1; cursor: pointer;'
+      }, '拒绝')
+    ])
+  })
+}
+
 async function startCall() {
   if (!selectedPeer.value || !localVideo.value || !remoteVideo.value) return
 
@@ -78,7 +115,8 @@ async function startCall() {
     localVideo.value.srcObject = localStream
 
     // 发起视频通话
-    peerCall = peerStore.peer?.call(selectedPeer.value, localStream)
+    if (!peerStore.peer) return
+    peerCall = peerStore.peer.call(selectedPeer.value, localStream)
     
     peerCall.on('stream', (stream: MediaStream) => {
       if (remoteVideo.value) {
@@ -128,33 +166,6 @@ function endCall() {
   })
 }
 
-// 监听其他用户的视频通话请求
-peerStore.peer?.on('call', (call) => {
-  if (isCalling.value) {
-    call.close()
-    return
-  }
-
-  notification.info({
-    message: '收到视频通话请求',
-    description: '是否接受？',
-    btn: h('div', { 
-      style: 'display: flex; gap: 8px; margin-top: 8px;' 
-    }, [
-      h('a-button', {
-        type: 'primary',
-        onClick: () => acceptCall(call),
-        style: 'flex: 1; cursor: pointer;'
-      }, '接受'),
-      h('a-button', {
-        danger: true,
-        onClick: () => call.close(),
-        style: 'flex: 1; cursor: pointer;'
-      }, '拒绝')
-    ])
-  })
-})
-
 async function acceptCall(call: any) {
   if (!localVideo.value || !remoteVideo.value) return
 
@@ -197,10 +208,6 @@ async function acceptCall(call: any) {
     })
   }
 }
-
-onUnmounted(() => {
-  endCall()
-})
 </script>
 
 <style scoped>
