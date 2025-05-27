@@ -15,10 +15,6 @@ export const useConnectionStore = defineStore('connection', () => {
 
     for(const item of connectList.value){
       if(item.id === id){
-        if(name){
-          console.log(id, name, '设置连接名称')
-          item.name = name
-        }
         return
       }
     }
@@ -36,24 +32,27 @@ export const useConnectionStore = defineStore('connection', () => {
           `与 ID 为 ${conn.peer} 的用户连接成功`,
         duration: 4
       })
-      conn.send({
+      console.log(`${ name? '反向' : '主动' }连接成功，发送用户名称信息: ${peerStore.name} -> ${conn.peer}`)
+      const messageItem: MessageItem = {
         name: peerStore.name,
         peerID: peerStore.peerID,
         content: '',
-        time: new Date().toLocaleString()
-      })
-      console.log(conn.peer, '连接成功，发送用户信息')
+        time: new Date().toLocaleString(),
+        command: 'SET_NAME'
+      }
+      conn.send(messageItem)
     })
   }
 
   function setConnectName(id: string, name: string) {
-    console.log(id, name, '设置连接名称')
     for(const item of connectList.value){
       if(item.id === id){
+        console.log(`主动连接获取到反向连接名称: ${id} -> ${name}`)
         item.name = name
         return
       }
     }
+    console.log(`收到主动连接，进行反向连接并设置名称: ${id} -> ${name}`)
     connect(id, name)
   }
 
@@ -66,7 +65,8 @@ export const useConnectionStore = defineStore('connection', () => {
       name: peerStore.name,
       peerID: peerStore.peerID,
       content: message,
-      time: new Date().toLocaleString()
+      time: new Date().toLocaleString(),
+      command: 'MESSAGE'
     }
     useDialogStore().addDialogItem(true, messageItem)
     let toAll = true
@@ -79,7 +79,6 @@ export const useConnectionStore = defineStore('connection', () => {
     for(const conn of connectList.value){
       if(toAll || conn.selected){
         conn.conn.send(messageItem)
-        conn.selected = false
       }
     }
   }

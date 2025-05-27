@@ -13,7 +13,8 @@ export interface MessageItem {
     name: string,
     peerID: string,
     content: string,
-    time: string
+    time: string,
+    command: string
 }
 
 export interface ConnectionItem {

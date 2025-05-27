@@ -22,11 +22,10 @@ export const usePeerStore = defineStore('peer', () => {
     peer.value.on('connection', function (conn) {
       conn.on('data', function (data) {
         const msgItem = data as MessageItem
-        if(msgItem.content === '') {
-          console.log(msgItem.peerID, msgItem.name, '收到用户名称信息')
+        if(msgItem.command === 'SET_NAME') {
           useConnectionStore().setConnectName(msgItem.peerID, msgItem.name)
         }
-        else{
+        else if(msgItem.command === 'MESSAGE'){
           useDialogStore().addDialogItem(false, msgItem)
         }
       })

@@ -6,7 +6,18 @@
         <a-statistic title="连接数量" :value="connectList.length" />
       </a-col>
       <a-col :span="20">
-        <a-statistic title="Peer ID" :value="peerID || '请先创建名称'" />
+        <a-statistic title="Peer ID" :value="peerID || '请先创建名称'">
+          <template #suffix>
+            <a-button 
+              v-if="peerID"
+              type="link" 
+              @click="copyPeerID"
+              :title="copyStatus"
+            >
+              <template #icon><CopyOutlined /></template>
+            </a-button>
+          </template>
+        </a-statistic>
       </a-col>
     </a-row>
   </div>
@@ -39,24 +50,55 @@
     </div>
   </div>
   <div style="height: 20px;"></div>
-  <a-table :scroll="{ x: 'max-content' }" :dataSource="connectList" :columns="connCol"></a-table>
+  <a-table 
+    :scroll="{ x: 'max-content' }" 
+    :dataSource="connectList" 
+    :columns="connCol"
+    :pagination="false"
+  >
+    <template #bodyCell="{ column, text }">
+      <template v-if="column.key === 'id'">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>{{ text }}</span>
+          <a-button 
+            type="link" 
+            @click="copyID(text)"
+            title="点击复制"
+          >
+            <template #icon><CopyOutlined /></template>
+          </a-button>
+        </div>
+      </template>
+    </template>
+  </a-table>
 </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, h } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePeerStore } from '@/stores/peer'
 import { useConnectionStore } from '@/stores/connection'
+import { CopyOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 
 const { peerID, name }  = storeToRefs(usePeerStore())
 const userPeerID = ref('')
 const nameReady = ref(false)
 const { connectList } = storeToRefs(useConnectionStore())
+const copyStatus = ref('点击复制')
 
 const connCol = [
-  { title: '用户名称', dataIndex: 'name', key: 'name'},
-  { title: 'ID', dataIndex: 'id', key: 'id'}
+  { 
+    title: '用户名称', 
+    dataIndex: 'name', 
+    key: 'name'
+  },
+  { 
+    title: 'Peer ID', 
+    dataIndex: 'id', 
+    key: 'id'
+  }
 ]
 
 function confirmName() {
@@ -70,6 +112,29 @@ function addUser() {
   if (userPeerID.value) {
     usePeerStore().connect(userPeerID.value)
     userPeerID.value = ''
+  }
+}
+
+async function copyPeerID() {
+  if (!peerID.value) return
+  try {
+    await navigator.clipboard.writeText(peerID.value)
+    copyStatus.value = '已复制'
+    message.success('Peer ID 已复制到剪贴板')
+    setTimeout(() => {
+      copyStatus.value = '点击复制'
+    }, 2000)
+  } catch (err) {
+    message.error('复制失败')
+  }
+}
+
+async function copyID(id: string) {
+  try {
+    await navigator.clipboard.writeText(id)
+    message.success('ID 已复制到剪贴板')
+  } catch (err) {
+    message.error('复制失败')
   }
 }
 </script>
