@@ -1,33 +1,42 @@
-# p2p-chatroom
+# P2P 聊天室
 
-This template should help get you started developing with Vue 3 in Vite.
+这是一个课程作业，可能功能并不完善。
 
-## Recommended IDE Setup
+一个基于 WebRTC 和 PeerJS 的 P2P 简单聊天应用，支持文本聊天和视频通话功能。
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 功能特点
 
-## Type Support for `.vue` Imports in TS
+- 实时文本聊天
+- 视频通话
+- P2P 连接，无需中央服务器
+- 简洁美观的用户界面
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## 在线演示
 
-## Customize configuration
+访问 [在线演示](https://himeditator.github.io/p2p-chatroom/) 体验应用。
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 本地开发
 
-## Project Setup
-
-```sh
+```bash
+# 安装依赖
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+# 启动开发服务器
 npm run dev
-```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
+# 构建生产版本
 npm run build
 ```
+
+## 技术栈
+
+- Vue 3
+- TypeScript
+- PeerJS
+- WebRTC
+- Ant Design Vue
+- Vite
+
+## 许可证
+
+MIT
