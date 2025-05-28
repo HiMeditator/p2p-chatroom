@@ -21,6 +21,22 @@
       </a-col>
     </a-row>
   </div>
+  <div class="input-item">
+    <a-switch
+      v-model:checked="useCustomPeerID"
+      :disabled="nameReady"
+      class="custom-peer-switch"
+    />
+    <span class="switch-label">使用自定义 Peer ID</span>
+    <span class="switch-label-info">不要使用太简单的 ID，防止冲突</span>
+    <a-input
+      v-if="useCustomPeerID"
+      v-model:value="customPeerID"
+      placeholder="输入自定义 Peer ID"
+      class="custom-peer-input"
+      :disabled="nameReady"
+    />
+  </div>
   <div class="input-info">
     <div class="input-item">
       <a-button
@@ -36,7 +52,7 @@
       />
     </div>
     <div class="input-name-text">
-      <span v-if="!name.trim()">{{ "名称不能为空，确认后无法修改" }}</span>
+      <span v-if="!name.trim()">{{ "名称不能为空，确认后无法修改，如果确认后长时间没有Peer ID，请重新刷新页面" }}</span>
     </div>
     <div class="input-item">
       <a-button
@@ -56,7 +72,7 @@
     :columns="connCol"
     :pagination="false"
   >
-    <template #bodyCell="{ column, text }">
+    <template #bodyCell="{ column, text, record }">
       <template v-if="column.key === 'id'">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span>{{ text }}</span>
@@ -69,24 +85,41 @@
           </a-button>
         </div>
       </template>
+      <template v-if="column.key === 'online'">
+        <a-tag :color="record.online ? 'success' : 'error'">
+          {{ record.online ? '在线' : '离线' }}
+        </a-tag>
+      </template>
+      <template v-if="column.key === 'action'">
+        <a-button
+          type="link"
+          danger
+          @click="handleDisconnect(record.id, record.name)"
+          title="断开连接"
+        >
+          <template #icon><DisconnectOutlined /></template>
+        </a-button>
+      </template>
     </template>
   </a-table>
 </div>
 </template>
 
 <script setup lang="ts">
-import { ref, h } from 'vue'
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePeerStore } from '@/stores/peer'
 import { useConnectionStore } from '@/stores/connection'
-import { CopyOutlined } from '@ant-design/icons-vue'
-import { message } from 'ant-design-vue'
+import { CopyOutlined, DisconnectOutlined } from '@ant-design/icons-vue'
+import { message, Modal } from 'ant-design-vue'
 
 const { peerID, name }  = storeToRefs(usePeerStore())
 const userPeerID = ref('')
 const nameReady = ref(false)
 const { connectList } = storeToRefs(useConnectionStore())
 const copyStatus = ref('点击复制')
+const useCustomPeerID = ref(false)
+const customPeerID = ref('')
 
 const connCol = [
   { 
@@ -98,13 +131,28 @@ const connCol = [
     title: 'Peer ID', 
     dataIndex: 'id', 
     key: 'id'
+  },
+  {
+    title: '状态',
+    dataIndex: 'online',
+    key: 'online',
+    width: 100
+  },
+  {
+    title: '操作',
+    key: 'action',
+    width: 100
   }
 ]
 
 function confirmName() {
   if(name.value.trim()){
     nameReady.value = true
-    usePeerStore().initPeer()
+    if (useCustomPeerID.value && customPeerID.value.trim()) {
+      usePeerStore().initPeer(customPeerID.value)
+    } else {
+      usePeerStore().initPeer()
+    }
   }
 }
 
@@ -137,6 +185,18 @@ async function copyID(id: string) {
     message.error('复制失败')
   }
 }
+
+function handleDisconnect(id: string, name: string) {
+  Modal.confirm({
+    title: '确认断开连接',
+    content: `确定要断开与用户 ${name} 的连接吗？`,
+    okText: '确定',
+    cancelText: '取消',
+    onOk() {
+      useConnectionStore().disconnect(id)
+    }
+  })
+}
 </script>
 
 <style scoped>
@@ -164,5 +224,23 @@ async function copyID(id: string) {
 .input-input {
   margin-left: 10px;
   width: calc(100% - 100px);
+}
+
+.custom-peer-switch {
+  margin-right: 8px;
+}
+
+.switch-label {
+  margin-right: 16px;
+}
+
+.switch-label-info {
+  font-size: 13px;
+  font-weight: lighter;
+  vertical-align: bottom;
+}
+
+.custom-peer-input {
+  margin-top: 8px;
 }
 </style>

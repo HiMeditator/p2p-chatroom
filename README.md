@@ -1,15 +1,22 @@
-# P2P 聊天室
+<div align="center" >
+    <img src="./public/icon.png" width="100px" height="100px"/>
+    <h1>P2P Chatroom</h1>
+    <p>一个基于 WebRTC 和 PeerJS 的 P2P 简单聊天应用，支持文本聊天和视频通话功能。</p>
+    <p>
+        | <b>简体中文</b> |
+    </p>
+</div>
 
-这是一个课程作业，可能功能并不完善。
+## 注意
 
-一个基于 WebRTC 和 PeerJS 的 P2P 简单聊天应用，支持文本聊天和视频通话功能。
+不支持移动端。
 
 ## 功能特点
 
 - 实时文本聊天
 - 视频通话
 - P2P 连接，无需中央服务器
-- 简洁美观的用户界面
+- 简洁的用户界面
 
 ## 在线演示
 

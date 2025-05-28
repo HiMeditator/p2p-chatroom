@@ -24,7 +24,8 @@ export const useConnectionStore = defineStore('connection', () => {
         name: name ||'未知名称',
         id,
         selected: false,
-        conn
+        conn,
+        online: true
       })
       notification.open({
         message: '连接成功',
@@ -41,7 +42,36 @@ export const useConnectionStore = defineStore('connection', () => {
         command: 'SET_NAME'
       }
       conn.send(messageItem)
+
+      // 监听连接关闭
+      conn.on('close', () => {
+        updateConnectionStatus(id, false)
+        notification.open({
+          message: '连接断开',
+          description: `与用户 ${name || id} 的连接已断开`,
+          duration: 4
+        })
+      })
+
+      // 监听连接错误
+      conn.on('error', () => {
+        updateConnectionStatus(id, false)
+        notification.open({
+          message: '连接错误',
+          description: `与用户 ${name || id} 的连接出现错误`,
+          duration: 4
+        })
+      })
     })
+  }
+
+  function updateConnectionStatus(id: string, online: boolean) {
+    for(const item of connectList.value){
+      if(item.id === id){
+        item.online = online
+        return
+      }
+    }
   }
 
   function setConnectName(id: string, name: string) {
@@ -77,8 +107,27 @@ export const useConnectionStore = defineStore('connection', () => {
       }
     }
     for(const conn of connectList.value){
-      if(toAll || conn.selected){
+      if((toAll || conn.selected) && conn.online){
         conn.conn.send(messageItem)
+      }
+    }
+  }
+
+  function disconnect(id: string) {
+    const messageItem: MessageItem = {
+      name: usePeerStore().name,
+      peerID: usePeerStore().peerID,
+      content: '',
+      time: new Date().toLocaleString(),
+      command: 'DISCONNECT'
+    }
+    for(let i = 0; i < connectList.value.length; i++) {
+      const item = connectList.value[i]
+      if(item.id === id) {
+        item.conn.send(messageItem)
+        item.conn.close()
+        connectList.value.splice(i, 1)
+        return
       }
     }
   }
@@ -87,6 +136,8 @@ export const useConnectionStore = defineStore('connection', () => {
     connectList,
     connect,
     setConnectName,
-    sendMessage
+    sendMessage,
+    updateConnectionStatus,
+    disconnect
   }
 })

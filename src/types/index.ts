@@ -21,5 +21,6 @@ export interface ConnectionItem {
     name: string,
     id: string,
     selected: boolean,
-    conn: DataConnection
+    conn: DataConnection,
+    online: boolean
 }

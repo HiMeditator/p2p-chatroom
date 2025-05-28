@@ -10,10 +10,14 @@ export const usePeerStore = defineStore('peer', () => {
   const name = ref('')
   const peerID = ref('')
 
-  function initPeer() {
+  function initPeer(customID?: string) {
     if (peer.value) return
 
-    peer.value = new Peer()
+    if (customID) {
+      peer.value = new Peer(customID)
+    } else {
+      peer.value = new Peer()
+    }
     
     peer.value.on('open', function (id) {
       peerID.value = id
@@ -27,6 +31,9 @@ export const usePeerStore = defineStore('peer', () => {
         }
         else if(msgItem.command === 'MESSAGE'){
           useDialogStore().addDialogItem(false, msgItem)
+        }
+        else if(msgItem.command === 'DISCONNECT'){
+          useConnectionStore().disconnect(msgItem.peerID)
         }
       })
     })
