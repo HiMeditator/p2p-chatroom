@@ -159,11 +159,13 @@ function endCall() {
   if (remoteVideo.value) {
     remoteVideo.value.srcObject = null
   }
+  if(isCalling.value){
+    isCalling.value = false
+    notification.info({
+      message: '视频通话已结束'
+    })
+  }
 
-  isCalling.value = false
-  notification.info({
-    message: '视频通话已结束'
-  })
 }
 
 async function acceptCall(call: any) {

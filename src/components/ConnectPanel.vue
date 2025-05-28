@@ -5,7 +5,7 @@
       <a-col :span="4">
         <a-statistic title="连接数量" :value="connectList.length" />
       </a-col>
-      <a-col :span="20">
+      <a-col :span="16">
         <a-statistic title="Peer ID" :value="peerID || '请先创建名称'">
           <template #suffix>
             <a-button 
@@ -18,6 +18,14 @@
             </a-button>
           </template>
         </a-statistic>
+      </a-col>
+      <a-col :span="4">
+        <div style="color: rgba(0,0,0,0.45);margin-bottom: 4px;">项目地址</div>
+        <a href="https://github.com/HiMeditator/p2p-chatroom"
+          target="_blank" class="proj-link"
+        >
+          <GithubOutlined  title="GitHub"/>
+        </a>
       </a-col>
     </a-row>
   </div>
@@ -160,7 +168,7 @@ import { usePeerStore } from '@/stores/peer'
 import { useConnectionStore } from '@/stores/connection'
 import { CopyOutlined, DisconnectOutlined, LinkOutlined } from '@ant-design/icons-vue'
 import { message, Modal } from 'ant-design-vue'
-
+import { GithubOutlined } from '@ant-design/icons-vue';
 const { peerID, name }  = storeToRefs(usePeerStore())
 const userPeerID = ref('')
 const nameReady = ref(false)
@@ -267,6 +275,14 @@ function handleDisconnect(id: string, name: string) {
 </script>
 
 <style scoped>
+.proj-link {
+  display: inline-block;
+  font-size: 24px;
+  cursor: pointer;
+  color: #1f2328;
+  /* margin-top: 10px; */
+}
+
 .input-info {
   margin-top: 20px;
 }
