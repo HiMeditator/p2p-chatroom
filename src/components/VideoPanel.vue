@@ -212,7 +212,7 @@ async function acceptCall(call: any) {
 
 <style scoped>
 .video-panel {
-  padding: 20px;
+  padding: 5px 20px;
 }
 
 .video-container {

@@ -4,6 +4,7 @@ import { Peer } from 'peerjs'
 import { useDialogStore } from './dialog'
 import { useConnectionStore } from './connection'
 import type { MessageItem } from '@/types'
+import { message } from 'ant-design-vue'
 
 export const usePeerStore = defineStore('peer', () => {
   const peer = ref<Peer | null>(null)
@@ -34,6 +35,18 @@ export const usePeerStore = defineStore('peer', () => {
         }
         else if(msgItem.command === 'DISCONNECT'){
           useConnectionStore().disconnect(msgItem.peerID)
+        }
+        else if(msgItem.command === 'GET_FRIEND_NODE'){
+          useConnectionStore().sendFriendNodeList(msgItem.peerID)
+        }
+        else if(msgItem.command === 'SEND_NODE_LIST'){
+          console.log(`收到好友列表：${JSON.stringify(msgItem.friendNodeList)}`)
+          const friendNodeList = msgItem.friendNodeList ?? []
+          for(const node of friendNodeList){
+            if(node.id !== peerID.value){
+              useConnectionStore().addFriendNode(node)
+            }
+          }
         }
       })
     })

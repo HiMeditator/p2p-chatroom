@@ -65,43 +65,91 @@
       />      
     </div>
   </div>
-  <div style="height: 20px;"></div>
-  <a-table 
-    :scroll="{ x: 'max-content' }" 
-    :dataSource="connectList" 
-    :columns="connCol"
-    :pagination="false"
-  >
-    <template #bodyCell="{ column, text, record }">
-      <template v-if="column.key === 'id'">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span>{{ text }}</span>
-          <a-button 
-            type="link" 
-            @click="copyID(text)"
-            title="点击复制"
-          >
-            <template #icon><CopyOutlined /></template>
-          </a-button>
-        </div>
-      </template>
-      <template v-if="column.key === 'online'">
-        <a-tag :color="record.online ? 'success' : 'error'">
-          {{ record.online ? '在线' : '离线' }}
-        </a-tag>
-      </template>
-      <template v-if="column.key === 'action'">
-        <a-button
-          type="link"
-          danger
-          @click="handleDisconnect(record.id, record.name)"
-          title="断开连接"
-        >
-          <template #icon><DisconnectOutlined /></template>
-        </a-button>
-      </template>
-    </template>
-  </a-table>
+  <div style="height: 10px;"></div>
+  <a-tabs v-model:activeKey="activeTab">
+    <a-tab-pane key="active" tab="直接连接">
+      <a-table 
+        :scroll="{ x: 'max-content' }" 
+        :dataSource="connectList" 
+        :columns="connCol"
+        :pagination="false"
+        size="middle"
+      >
+        <template #bodyCell="{ column, text, record }">
+          <template v-if="column.key === 'id'">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span>{{ text }}</span>
+              <a-button 
+                type="link" 
+                @click="copyID(text)"
+                title="点击复制"
+              >
+                <template #icon><CopyOutlined /></template>
+              </a-button>
+            </div>
+          </template>
+          <template v-if="column.key === 'online'">
+            <a-tag :color="record.online ? 'success' : 'error'">
+              {{ record.online ? '在线' : '离线' }}
+            </a-tag>
+          </template>
+          <template v-if="column.key === 'action'">
+            <a-button
+              type="link"
+              danger
+              @click="handleDisconnect(record.id, record.name)"
+              title="断开连接"
+            >
+              <template #icon><DisconnectOutlined /></template>
+            </a-button>
+          </template>
+        </template>
+      </a-table>
+    </a-tab-pane>
+    <a-tab-pane key="friend" tab="间接连接">
+      <a-button
+        type="primary"
+        style="margin-bottom:10px;"
+        @click="useConnectionStore().getFriendNodeList()"
+      >获取最新间接连接</a-button>
+      <a-table 
+        :scroll="{ x: 'max-content' }" 
+        :dataSource="friendNodeList" 
+        :columns="nodeCol"
+        :pagination="false"
+        size="middle"
+      >
+        <template #bodyCell="{ column, text, record }">
+          <template v-if="column.key === 'id'">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span>{{ text }}</span>
+              <a-button 
+                type="link" 
+                @click="copyID(text)"
+                title="点击复制"
+              >
+                <template #icon><CopyOutlined /></template>
+              </a-button>
+            </div>
+          </template>
+          <template v-if="column.key === 'online'">
+            <a-tag :color="record.online ? 'success' : 'error'">
+              {{ record.online ? '在线' : '离线' }}
+            </a-tag>
+          </template>
+          <template v-if="column.key === 'action'">
+            <a-button
+              type="link"
+              @click="useConnectionStore().connect(record.id)"
+              title="连接"
+            >
+              <template #icon><LinkOutlined /></template>
+            </a-button>
+          </template>
+        </template>
+      </a-table>
+    </a-tab-pane>
+  </a-tabs>
 </div>
 </template>
 
@@ -110,16 +158,17 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePeerStore } from '@/stores/peer'
 import { useConnectionStore } from '@/stores/connection'
-import { CopyOutlined, DisconnectOutlined } from '@ant-design/icons-vue'
+import { CopyOutlined, DisconnectOutlined, LinkOutlined } from '@ant-design/icons-vue'
 import { message, Modal } from 'ant-design-vue'
 
 const { peerID, name }  = storeToRefs(usePeerStore())
 const userPeerID = ref('')
 const nameReady = ref(false)
-const { connectList } = storeToRefs(useConnectionStore())
+const { connectList, friendNodeList  } = storeToRefs(useConnectionStore())
 const copyStatus = ref('点击复制')
 const useCustomPeerID = ref(false)
 const customPeerID = ref('')
+const activeTab = ref('active')
 
 const connCol = [
   { 
@@ -137,6 +186,24 @@ const connCol = [
     dataIndex: 'online',
     key: 'online',
     width: 100
+  },
+  {
+    title: '操作',
+    key: 'action',
+    width: 100
+  }
+]
+
+const nodeCol = [
+  { 
+    title: '用户名称', 
+    dataIndex: 'name', 
+    key: 'name'
+  },
+  { 
+    title: 'Peer ID', 
+    dataIndex: 'id', 
+    key: 'id'
   },
   {
     title: '操作',

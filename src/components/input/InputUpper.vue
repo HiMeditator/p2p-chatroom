@@ -65,7 +65,7 @@ document.addEventListener('click', (e) => {
 </script>
 
 <style scoped>
-@import '../../assets/css/dropup2.css';
+@import '../../assets/dropup.css';
 
 .small-text {
   font-size: 12px;

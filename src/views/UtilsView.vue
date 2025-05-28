@@ -12,7 +12,9 @@ import VideoPanel from '@/components/VideoPanel.vue';
 
 <style scoped>
 .utils-view {
-  padding: 20px;
+  padding: 20px 20px;
+  height: 100vh;
+  overflow: auto;
 }
 </style>
 

@@ -14,7 +14,8 @@ export interface MessageItem {
     peerID: string,
     content: string,
     time: string,
-    command: string
+    command: string,
+    friendNodeList?: NodeItem[]
 }
 
 export interface ConnectionItem {
@@ -23,4 +24,9 @@ export interface ConnectionItem {
     selected: boolean,
     conn: DataConnection,
     online: boolean
+}
+
+export interface NodeItem {
+    name: string,
+    id: string
 }

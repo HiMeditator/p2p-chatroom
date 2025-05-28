@@ -2,12 +2,12 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useDialogStore } from './dialog'
 import { usePeerStore } from './peer'
-import type { ConnectionItem, MessageItem } from '@/types'
+import type { ConnectionItem, MessageItem, NodeItem } from '@/types'
 import { notification } from 'ant-design-vue'
 
 export const useConnectionStore = defineStore('connection', () => {
   const connectList = ref<ConnectionItem[]>([])
-
+  const friendNodeList = ref<NodeItem[]>([])
   function connect(id: string, name?: string) {
     const peerStore = usePeerStore()
     const peer = peerStore.peer
@@ -27,6 +27,7 @@ export const useConnectionStore = defineStore('connection', () => {
         conn,
         online: true
       })
+      removeFriendNode(conn.peer)
       notification.open({
         message: '连接成功',
         description:
@@ -42,7 +43,6 @@ export const useConnectionStore = defineStore('connection', () => {
         command: 'SET_NAME'
       }
       conn.send(messageItem)
-
       // 监听连接关闭
       conn.on('close', () => {
         updateConnectionStatus(id, false)
@@ -52,7 +52,6 @@ export const useConnectionStore = defineStore('connection', () => {
           duration: 4
         })
       })
-
       // 监听连接错误
       conn.on('error', () => {
         updateConnectionStatus(id, false)
@@ -113,6 +112,79 @@ export const useConnectionStore = defineStore('connection', () => {
     }
   }
 
+  function getFriendNodeList() {
+    const peerStore = usePeerStore()
+    const peer = peerStore.peer
+    if (!peer) return
+    const messageItem: MessageItem = {
+      name: peerStore.name,
+      peerID: peerStore.peerID,
+      content: '',
+      time: new Date().toLocaleString(),
+      command: 'GET_FRIEND_NODE'
+    }
+    for(const conn of connectList.value){
+      if(conn.online){
+        conn.conn.send(messageItem)
+        console.log(`请求获取 ${conn.name}: ${conn.id} 的好友列表`)
+      }
+    }
+  }
+
+  function sendFriendNodeList(targetID: string) {
+    const peerStore = usePeerStore()
+    const peer = peerStore.peer
+    if (!peer) return
+    const messageItem: MessageItem = {
+      name: peerStore.name,
+      peerID: peerStore.peerID,
+      content: '',
+      time: new Date().toLocaleString(),
+      command: 'SEND_NODE_LIST',
+      friendNodeList: []
+    }
+    for(const conn of connectList.value){
+      if(conn.online){
+        messageItem.friendNodeList?.push({
+          name: conn.name,
+          id: conn.id
+        })
+      }
+    }
+    for(const conn of connectList.value){
+      if(conn.id === targetID && conn.online){
+        conn.conn.send(messageItem)
+        console.log(`发送好友列表给 ${conn.name}: ${conn.id}`)
+        console.log(`发送列表信息: ${JSON.stringify(messageItem.friendNodeList)}`)
+      }
+    }
+  }
+
+  function addFriendNode(node: NodeItem) {
+    for(const item of friendNodeList.value){
+      if(item.id === node.id){
+        return
+      }
+    }
+    for(const item of connectList.value) {
+      if(item.id === node.id){
+        return
+      }
+    }
+    console.log(`添加到好友列表: ${JSON.stringify(node)}`)
+    friendNodeList.value.push(node)
+  }
+
+  function removeFriendNode(id: string) {
+    for(let i = 0; i < friendNodeList.value.length; i++) {
+      const item = friendNodeList.value[i]
+      if(item.id === id) {
+        friendNodeList.value.splice(i, 1)
+        return
+      }
+    }
+  }
+
   function disconnect(id: string) {
     const messageItem: MessageItem = {
       name: usePeerStore().name,
@@ -134,10 +206,13 @@ export const useConnectionStore = defineStore('connection', () => {
 
   return {
     connectList,
+    friendNodeList,
     connect,
     setConnectName,
     sendMessage,
-    updateConnectionStatus,
+    getFriendNodeList,
+    sendFriendNodeList,
+    addFriendNode,
     disconnect
   }
 })

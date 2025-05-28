@@ -58,7 +58,7 @@ onMounted(() => {
 }
 
 .input-box:focus-within {
-  border: 1px solid var(--vscode-button-hoverBackground, #5a4579);
+  border: 1px solid var(--vscode-button-hoverBackground, #005fb8);
 }
 
 textarea {
