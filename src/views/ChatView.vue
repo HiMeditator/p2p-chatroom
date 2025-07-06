@@ -1,5 +1,11 @@
 <template>
   <div class="chat-container">
+    <div class="setting">
+      <a-radio-group v-model:value="uiLanguage">
+        <a-radio-button value="zh">中文</a-radio-button>
+        <a-radio-button value="en">English</a-radio-button>
+      </a-radio-group>
+    </div>
     <DialogBox />
     <div class="sep-line"></div>
     <InputBox />
@@ -9,6 +15,11 @@
 <script setup lang="ts">
 import DialogBox from '../components/DialogBox.vue'
 import InputBox from '../components/InputBox.vue'
+import { useSettingStore } from '@/stores/setting'
+import { storeToRefs } from 'pinia'
+
+const settingStore = useSettingStore()
+const { uiLanguage } = storeToRefs(settingStore)
 </script>
 
 <style scoped>
@@ -17,6 +28,12 @@ import InputBox from '../components/InputBox.vue'
   flex-direction: column;
   height: 100vh;
   border-right: 1px solid rgba(128, 128, 128, 0.4);
+}
+
+.setting {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
 }
 
 .dialog-box {

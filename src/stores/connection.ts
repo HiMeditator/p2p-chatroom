@@ -8,6 +8,7 @@ import { notification } from 'ant-design-vue'
 export const useConnectionStore = defineStore('connection', () => {
   const connectList = ref<ConnectionItem[]>([])
   const friendNodeList = ref<NodeItem[]>([])
+
   function connect(id: string, name?: string) {
     const peerStore = usePeerStore()
     const peer = peerStore.peer
@@ -21,7 +22,7 @@ export const useConnectionStore = defineStore('connection', () => {
     const conn = peer.connect(id)
     conn.on('open', function () {
       connectList.value.push({
-        name: name ||'未知名称',
+        name: name || id,
         id,
         selected: false,
         conn,
@@ -34,7 +35,7 @@ export const useConnectionStore = defineStore('connection', () => {
           `与 ID 为 ${conn.peer} 的用户连接成功`,
         duration: 4
       })
-      console.log(`${ name? '反向' : '主动' }连接成功，发送用户名称信息: ${peerStore.name} -> ${conn.peer}`)
+      // console.log(`${ name? '反向' : '主动' }连接成功，发送用户名称信息: ${peerStore.name} -> ${conn.peer}`)
       const messageItem: MessageItem = {
         name: peerStore.name,
         peerID: peerStore.peerID,
@@ -43,7 +44,7 @@ export const useConnectionStore = defineStore('connection', () => {
         command: 'SET_NAME'
       }
       conn.send(messageItem)
-      // 监听连接关闭
+
       conn.on('close', () => {
         updateConnectionStatus(id, false)
         notification.open({
@@ -52,7 +53,7 @@ export const useConnectionStore = defineStore('connection', () => {
           duration: 4
         })
       })
-      // 监听连接错误
+
       conn.on('error', () => {
         updateConnectionStatus(id, false)
         notification.open({
@@ -76,12 +77,12 @@ export const useConnectionStore = defineStore('connection', () => {
   function setConnectName(id: string, name: string) {
     for(const item of connectList.value){
       if(item.id === id){
-        console.log(`主动连接获取到反向连接名称: ${id} -> ${name}`)
+        // console.log(`主动连接获取到反向连接名称: ${id} -> ${name}`)
         item.name = name
         return
       }
     }
-    console.log(`收到主动连接，进行反向连接并设置名称: ${id} -> ${name}`)
+    // console.log(`收到主动连接，进行反向连接并设置名称: ${id} -> ${name}`)
     connect(id, name)
   }
 
@@ -126,7 +127,7 @@ export const useConnectionStore = defineStore('connection', () => {
     for(const conn of connectList.value){
       if(conn.online){
         conn.conn.send(messageItem)
-        console.log(`请求获取 ${conn.name}: ${conn.id} 的好友列表`)
+        // console.log(`请求获取 ${conn.name}: ${conn.id} 的好友列表`)
       }
     }
   }
@@ -154,8 +155,8 @@ export const useConnectionStore = defineStore('connection', () => {
     for(const conn of connectList.value){
       if(conn.id === targetID && conn.online){
         conn.conn.send(messageItem)
-        console.log(`发送好友列表给 ${conn.name}: ${conn.id}`)
-        console.log(`发送列表信息: ${JSON.stringify(messageItem.friendNodeList)}`)
+        // console.log(`发送好友列表给 ${conn.name}: ${conn.id}`)
+        // console.log(`发送列表信息: ${JSON.stringify(messageItem.friendNodeList)}`)
       }
     }
   }
@@ -171,7 +172,7 @@ export const useConnectionStore = defineStore('connection', () => {
         return
       }
     }
-    console.log(`添加到好友列表: ${JSON.stringify(node)}`)
+    // console.log(`添加到好友列表: ${JSON.stringify(node)}`)
     friendNodeList.value.push(node)
   }
 

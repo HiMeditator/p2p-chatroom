@@ -7,5 +7,5 @@ The following icons are used under CC BY 4.0 license:
 - icon.png
 
 Source:
- 
+
 - https://icon-icons.com/en/pack/Duetone/2064

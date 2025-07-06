@@ -1,7 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { nanoid } from 'nanoid'
-import { useConnectionStore } from './connection'
 import type { DialogItem, MessageItem } from '@/types'
 
 

@@ -43,6 +43,3 @@ npm run build
 - Ant Design Vue
 - Vite
 
-## 许可证
-
-MIT
