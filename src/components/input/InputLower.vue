@@ -2,7 +2,7 @@
   <div class="input-lower">
     <div class="div-btn" @click="useDialogStore().clearDialog">
       <FontAwesomeIcon :icon="faXmark" />
-      <span>清空聊天</span>
+      <span>{{ $t('chat.clear') }}</span>
     </div>
     <div class="send-message" @click="sendMessage">
       <span>Ctrl+Enter</span>

@@ -4,8 +4,11 @@ import { useDialogStore } from './dialog'
 import { usePeerStore } from './peer'
 import type { ConnectionItem, MessageItem, NodeItem } from '@/types'
 import { notification } from 'ant-design-vue'
+import { useI18n } from 'vue-i18n'
 
 export const useConnectionStore = defineStore('connection', () => {
+  const { t } = useI18n()
+
   const connectList = ref<ConnectionItem[]>([])
   const friendNodeList = ref<NodeItem[]>([])
 
@@ -30,9 +33,9 @@ export const useConnectionStore = defineStore('connection', () => {
       })
       removeFriendNode(conn.peer)
       notification.open({
-        message: '连接成功',
+        message: t('noti.connectSuccess'),
         description:
-          `与 ID 为 ${conn.peer} 的用户连接成功`,
+          `${t('noti.connectUser')}${conn.peer}`,
         duration: 4
       })
       // console.log(`${ name? '反向' : '主动' }连接成功，发送用户名称信息: ${peerStore.name} -> ${conn.peer}`)
@@ -48,8 +51,8 @@ export const useConnectionStore = defineStore('connection', () => {
       conn.on('close', () => {
         updateConnectionStatus(id, false)
         notification.open({
-          message: '连接断开',
-          description: `与用户 ${name || id} 的连接已断开`,
+          message: t('noti.disconnect'),
+          description: `${t('noti.disconnectUser')}${name || id}`,
           duration: 4
         })
       })
@@ -57,8 +60,8 @@ export const useConnectionStore = defineStore('connection', () => {
       conn.on('error', () => {
         updateConnectionStatus(id, false)
         notification.open({
-          message: '连接错误',
-          description: `与用户 ${name || id} 的连接出现错误`,
+          message: t('noti.connectError'),
+          description: `${t('noti.connectErrorUser')}${name || id}`,
           duration: 4
         })
       })

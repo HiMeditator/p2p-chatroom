@@ -3,10 +3,10 @@
   <div>
     <a-row>
       <a-col :span="4">
-        <a-statistic title="连接数量" :value="connectList.length" />
+        <a-statistic :title="$t('conn.connNum')" :value="connectList.length" />
       </a-col>
       <a-col :span="16">
-        <a-statistic title="Peer ID" :value="peerID || '请先创建名称'">
+        <a-statistic title="Peer ID" :value="peerID || $t('conn.createName')">
           <template #suffix>
             <a-button 
               v-if="peerID"
@@ -20,7 +20,7 @@
         </a-statistic>
       </a-col>
       <a-col :span="4">
-        <div style="color: rgba(0,0,0,0.45);margin-bottom: 4px;">项目地址</div>
+        <div style="color: rgba(0,0,0,0.45);margin-bottom: 4px;">{{ $t('conn.projectLink') }}</div>
         <a href="https://github.com/HiMeditator/p2p-chatroom"
           target="_blank" class="proj-link"
         >
@@ -35,12 +35,12 @@
       :disabled="nameReady"
       class="custom-peer-switch"
     />
-    <span class="switch-label">使用自定义 Peer ID</span>
-    <span class="switch-label-info">不要使用太简单的 ID，防止冲突</span>
+    <span class="switch-label">{{ $t('conn.customPeerID') }}</span>
+    <span class="switch-label-info">{{ $t('conn.customPeerIDInfo') }}</span>
     <a-input
-      v-if="useCustomPeerID"
+      v-if="useCustomPeerID && !nameReady"
       v-model:value="customPeerID"
-      placeholder="输入自定义 Peer ID"
+      :placeholder="$t('conn.customPeerIDInput')"
       class="custom-peer-input"
       :disabled="nameReady"
     />
@@ -51,31 +51,33 @@
         type="primary" :disabled="nameReady"
         class="input-btn" @click="confirmName"
       >
-      {{nameReady ? '你的名称' : '确认名称'}}
+      {{nameReady ? $t('conn.yourName') : $t('conn.confirmName')}}
       </a-button>
       <a-input
-        v-model:value="name" placeholder="你的名称"
+        v-model:value="name" :placeholder="$t('conn.yourName')"
         :status="name.trim() ? '' : 'error'"
         class="input-input" :disabled="nameReady"
       />
     </div>
     <div class="input-name-text">
-      <span v-if="!name.trim()">{{ "名称不能为空，确认后无法修改，如果确认后长时间没有Peer ID，请重新刷新页面" }}</span>
+      <span v-if="!name.trim()" style="display:inline-block;width: 55%;">
+        {{ $t('conn.nameEmpty') }}
+      </span>
     </div>
     <div class="input-item">
       <a-button
         type="primary" :disabled="userPeerID ? !nameReady : true"
         class="input-btn" @click="addUser"
-      >添加用户</a-button>
+      >{{ $t('conn.addUser') }}</a-button>
       <a-input
         class="input-input"
-        v-model:value="userPeerID" placeholder="用户 Peer ID"
+        v-model:value="userPeerID" :placeholder="$t('conn.userID')"
       />      
     </div>
   </div>
   <div style="height: 10px;"></div>
   <a-tabs v-model:activeKey="activeTab">
-    <a-tab-pane key="active" tab="直接连接">
+    <a-tab-pane key="active" :tab="$t('conn.connected')">
       <a-table 
         :scroll="{ x: 'max-content' }" 
         :dataSource="connectList" 
@@ -90,7 +92,7 @@
               <a-button 
                 type="link" 
                 @click="copyID(text)"
-                title="点击复制"
+                :title="$t('conn.copy')"
               >
                 <template #icon><CopyOutlined /></template>
               </a-button>
@@ -98,7 +100,7 @@
           </template>
           <template v-if="column.key === 'online'">
             <a-tag :color="record.online ? 'success' : 'error'">
-              {{ record.online ? '在线' : '离线' }}
+              {{ record.online ? $t('conn.online') : $t('conn.offline') }}
             </a-tag>
           </template>
           <template v-if="column.key === 'action'">
@@ -106,20 +108,19 @@
               type="link"
               danger
               @click="handleDisconnect(record.id, record.name)"
-              title="断开连接"
-            >
-              <template #icon><DisconnectOutlined /></template>
+              :title="$t('conn.disconnect')"
+            ><template #icon><DisconnectOutlined /></template>
             </a-button>
           </template>
         </template>
       </a-table>
     </a-tab-pane>
-    <a-tab-pane key="friend" tab="间接连接">
+    <a-tab-pane key="friend" :tab="$t('conn.more')">
       <a-button
         type="primary"
         style="margin-bottom:10px;"
         @click="useConnectionStore().getFriendNodeList()"
-      >获取最新间接连接</a-button>
+      >{{ $t('conn.getMore') }}</a-button>
       <a-table 
         :scroll="{ x: 'max-content' }" 
         :dataSource="friendNodeList" 
@@ -134,24 +135,22 @@
               <a-button 
                 type="link" 
                 @click="copyID(text)"
-                title="点击复制"
-              >
-                <template #icon><CopyOutlined /></template>
+                :title="$t('conn.copy')"
+              ><template #icon><CopyOutlined /></template>
               </a-button>
             </div>
           </template>
           <template v-if="column.key === 'online'">
             <a-tag :color="record.online ? 'success' : 'error'">
-              {{ record.online ? '在线' : '离线' }}
+              {{ record.online ? $t('conn.online') : $t('conn.offline') }}
             </a-tag>
           </template>
           <template v-if="column.key === 'action'">
             <a-button
               type="link"
               @click="useConnectionStore().connect(record.id)"
-              title="连接"
-            >
-              <template #icon><LinkOutlined /></template>
+              :title="$t('conn.connect')"
+            ><template #icon><LinkOutlined /></template>
             </a-button>
           </template>
         </template>
@@ -169,6 +168,10 @@ import { useConnectionStore } from '@/stores/connection'
 import { CopyOutlined, DisconnectOutlined, LinkOutlined } from '@ant-design/icons-vue'
 import { message, Modal } from 'ant-design-vue'
 import { GithubOutlined } from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 const { peerID, name }  = storeToRefs(usePeerStore())
 const userPeerID = ref('')
 const nameReady = ref(false)
@@ -180,7 +183,7 @@ const activeTab = ref('active')
 
 const connCol = [
   { 
-    title: '用户名称', 
+    title: 'Name', 
     dataIndex: 'name', 
     key: 'name'
   },
@@ -190,13 +193,13 @@ const connCol = [
     key: 'id'
   },
   {
-    title: '状态',
+    title: 'Status',
     dataIndex: 'online',
     key: 'online',
     width: 100
   },
   {
-    title: '操作',
+    title: 'Operation',
     key: 'action',
     width: 100
   }
@@ -204,7 +207,7 @@ const connCol = [
 
 const nodeCol = [
   { 
-    title: '用户名称', 
+    title: 'Name', 
     dataIndex: 'name', 
     key: 'name'
   },
@@ -214,7 +217,7 @@ const nodeCol = [
     key: 'id'
   },
   {
-    title: '操作',
+    title: 'Operation',
     key: 'action',
     width: 100
   }
@@ -242,31 +245,31 @@ async function copyPeerID() {
   if (!peerID.value) return
   try {
     await navigator.clipboard.writeText(peerID.value)
-    copyStatus.value = '已复制'
-    message.success('Peer ID 已复制到剪贴板')
+    copyStatus.value = t('conn.copied')
+    message.success(t('conn.idCopied'))
     setTimeout(() => {
-      copyStatus.value = '点击复制'
+      copyStatus.value = t('conn.copy')
     }, 2000)
   } catch (err) {
-    message.error('复制失败')
+    message.error(t('conn.copyFailed'))
   }
 }
 
 async function copyID(id: string) {
   try {
     await navigator.clipboard.writeText(id)
-    message.success('ID 已复制到剪贴板')
+    message.success(t('conn.idCopied'))
   } catch (err) {
-    message.error('复制失败')
+    message.error(t('conn.copyFailed'))
   }
 }
 
 function handleDisconnect(id: string, name: string) {
   Modal.confirm({
-    title: '确认断开连接',
-    content: `确定要断开与用户 ${name} 的连接吗？`,
-    okText: '确定',
-    cancelText: '取消',
+    title: t('conn.disconnectConfirm'),
+    content: `${t('conn.disconnectUser')}${name}`,
+    okText: t('conn.confirm'),
+    cancelText: t('conn.cancel'),
     onOk() {
       useConnectionStore().disconnect(id)
     }

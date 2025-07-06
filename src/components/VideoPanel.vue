@@ -3,7 +3,7 @@
     <div class="video-container">
       <div class="video-box">
         <video ref="localVideo" autoplay muted playsinline></video>
-        <div class="video-label">本地视频</div>
+        <div class="video-label">{{ $t('video.local') }}</div>
         <div class="video-controls">
           <a-button 
             type="text" 
@@ -30,7 +30,7 @@
       </div>
       <div class="video-box">
         <video ref="remoteVideo" autoplay playsinline></video>
-        <div class="video-label">远程视频</div>
+        <div class="video-label">{{ $t('video.remote') }}</div>
         <div class="video-controls">
           <a-button 
             type="text" 
@@ -60,7 +60,7 @@
       <a-select
         v-model:value="selectedPeer"
         style="width: 200px"
-        placeholder="选择要视频通话的用户"
+        :placeholder="$t('video.selectUser')"
       >
         <a-select-option v-for="conn in connectList" :key="conn.id" :value="conn.id">
           {{ conn.name || conn.id }} ({{ conn.id }})
@@ -71,7 +71,7 @@
         :disabled="!selectedPeer || isCalling"
         @click="startCall"
       >
-        开始视频通话
+        {{ $t('video.start') }}
       </a-button>
       <a-button 
         type="primary" 
@@ -79,7 +79,7 @@
         :disabled="!isCalling"
         @click="endCall"
       >
-        结束视频通话
+        {{ $t('video.stop') }}
       </a-button>
     </div>
 
@@ -126,6 +126,8 @@ import {
   PictureOutlined,
   CloseOutlined 
 } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const peerStore = usePeerStore()
 const connectionStore = useConnectionStore()
@@ -354,8 +356,8 @@ function handlePeerCall(event: Event) {
   }
 
   notification.info({
-    message: '收到视频通话请求',
-    description: '是否接受？',
+    message: t('noti.getVideoRequest'),
+    description: t('noti.isAccept'),
     btn: h('div', { 
       style: 'display: flex; gap: 8px; margin-top: 8px;' 
     }, [
@@ -366,7 +368,7 @@ function handlePeerCall(event: Event) {
           notification.close('video-call-request')
         },
         style: 'flex: 1; cursor: pointer;'
-      }, '接受'),
+      }, t('noti.accept')),
       h('a-button', {
         danger: true,
         onClick: () => {
@@ -374,7 +376,7 @@ function handlePeerCall(event: Event) {
           notification.close('video-call-request')
         },
         style: 'flex: 1; cursor: pointer;'
-      }, '拒绝')
+      }, t('noti.reject'))
     ]),
     key: 'video-call-request'
   })
@@ -385,8 +387,8 @@ async function startCall() {
 
   if (selectedPeer.value === peerStore.peerID) {
     notification.error({
-      message: '无法发起视频通话',
-      description: '不能与自己进行视频通话'
+      message: t('noti.callFail'),
+      description: t('noti.selfError')
     })
     return
   }
@@ -420,14 +422,13 @@ async function startCall() {
 
     isCalling.value = true
     notification.success({
-      message: '视频通话已开始',
-      description: '正在等待对方接听...'
+      message: t('noti.callStart'),
+      description: t('noti.waitCall')
     })
   } catch (err) {
-    console.error('获取媒体设备失败:', err)
     notification.error({
-      message: '启动视频通话失败',
-      description: '请确保已授予摄像头和麦克风权限'
+      message: t('noti.callError'),
+      description: t('noti.mediaIssue')
     })
   }
 }
@@ -452,7 +453,7 @@ function endCall() {
   if(isCalling.value){
     isCalling.value = false
     notification.info({
-      message: '视频通话已结束'
+      message: t('noti.callEnd')
     })
   }
 
@@ -465,8 +466,8 @@ async function acceptCall(call: any) {
   if (call.peer === peerStore.peerID) {
     call.close()
     notification.error({
-      message: '无法接受视频通话',
-      description: '不能与自己进行视频通话'
+      message: t('noti.acceptError'),
+      description: t('noti.selfError')
     })
     return
   }
@@ -500,10 +501,9 @@ async function acceptCall(call: any) {
     isCalling.value = true
     selectedPeer.value = call.peer
   } catch (err) {
-    console.error('获取媒体设备失败:', err)
     notification.error({
-      message: '接受视频通话失败',
-      description: '请确保已授予摄像头和麦克风权限'
+      message: t('noti.acceptError'),
+      description: t('noti.mediaIssue')
     })
   }
 }

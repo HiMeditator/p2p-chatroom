@@ -14,7 +14,7 @@
             </li>
           </span>
           <li v-show="!connectList.length">
-            <span class="small-text">暂无连接用户</span>
+            <span class="small-text">{{ $t('chat.noUser') }}</span>
           </li>
         </ul>
         <div class="dropup-input">
@@ -22,14 +22,14 @@
             type="text"
             class="dropup-input-content"
             v-model="search"
-            placeholder="搜索用户名称"
+            :placeholder="$t('chat.searchUser')"
           >
         </div>
       </div>
 
       <div class="add-user" @click="getContext">
         <FontAwesomeIcon :icon="faPlus" />
-        <span>发送给特定用户</span>
+        <span>{{ $t('chat.sendToUser') }}</span>
       </div>
     </div>
     <div v-for="(conn, index) in connectList" :key="conn.id">

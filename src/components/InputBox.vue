@@ -2,7 +2,7 @@
   <div class="input-box">
     <InputUpper />
     <textarea
-      rows="1" placeholder="输入聊天内容..."
+      rows="1" :placeholder="$t('chat.input')"
       ref="taInput" @keydown="handleKeydown"
     ></textarea>
     <InputLower

@@ -4,6 +4,7 @@
       <a-radio-group v-model:value="uiLanguage">
         <a-radio-button value="zh">中文</a-radio-button>
         <a-radio-button value="en">English</a-radio-button>
+        <a-radio-button value="ja">日本語</a-radio-button>
       </a-radio-group>
     </div>
     <DialogBox />

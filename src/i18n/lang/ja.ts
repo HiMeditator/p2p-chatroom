@@ -1,4 +1,65 @@
 export default {
   lang: "ja",
-  
+  chat: {
+    "input": "メッセージを入力...",
+    "clear": "チャットをクリア",
+    "noUser": "接続中のユーザーがいません",
+    "sendToUser": "特定のユーザーに送信",
+    "searchUser": "ユーザー名を検索"
+  },
+  conn: {
+    "connNum": "接続数",
+    "createName": "まず名前を作成してください",
+    "projectLink": "プロジェクトリンク",
+    "customPeerID": "カスタムPeer IDを使用",
+    "customPeerIDInfo": "簡単すぎるIDは使用しないでください。競合を避けるためです。",
+    "customPeerIDInput": "カスタムPeer IDを入力",
+    "confirmName": "確認",
+    "yourName": "名前",
+    "nameEmpty": "名前を空にすることはできません。確認後は変更できません。確認後にPeer IDが長時間表示されない場合は、ページをリフレッシュしてください。",
+    "addUser": "追加",
+    "userID": "ユーザーPeer ID",
+    "connected": "接続済み",
+    "copy": "コピー",
+    "online": "オンライン",
+    "offline": "オフライン",
+    "disconnect": "接続を切断",
+    "more": "他のユーザー",
+    "getMore": "他のユーザーを取得",
+    "connect": "接続",
+    "copied": "コピーしました",
+    "idCopied": "Peer ID がクリップボードにコピーされました",
+    "copyFailed": "コピーに失敗しました",
+    "disconnectConfirm": "切断を確認",
+    "disconnectUser": "以下のユーザーとの接続を切断しますか：",
+    "confirm": "確認",
+    "cancel": "キャンセル"
+  },
+  video: {
+    "local": "ローカルビデオ",
+    "remote": "リモートビデオ",
+    "selectUser": "ビデオ通話するユーザーを選択",
+    "start": "ビデオ通話を開始",
+    "stop": "ビデオ通話を終了"
+  },
+  noti: {
+    "getVideoRequest": "ビデオ通話のリクエストを受け取りました",
+    "isAccept": "リクエストを受けることがありますか？",
+    "accept": "受け入れる",
+    "reject": "拒否",
+    "callFail": "ビデオ通話を開始できません",
+    "selfError": "自分自身とのビデオ通話はできません",
+    "callStart": "ビデオ通話が始まりました",
+    "waitCall": "相手が応答するのを待っています...",
+    "callError": "ビデオ通話の開始に失敗しました",
+    "mediaIssue": "カメラとマイクの権限が許可されていることを確認してください",
+    "callEnd": "ビデオ通話が終了しました",
+    "acceptError": "ビデオ通話を受け入れられません",
+    "connectSuccess": "接続成功",
+    "connectUser": "IDを持つユーザーとの接続に成功しました：",
+    "disconnect": "切断されました",
+    "disconnectUser": "ユーザーとの接続が切断されました：",
+    "connectError": "接続エラー",
+    "connectErrorUser": "ユーザーとの接続にエラーが発生しました："
+  }  
 }

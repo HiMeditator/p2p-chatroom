@@ -1,4 +1,65 @@
 export default {
   lang: "zh",
-  
+  chat: {
+    "input": "输入聊天内容...",
+    "clear": "清空聊天",
+    "noUser": "暂无连接用户",
+    "sendToUser": "发送给特定用户",
+    "searchUser": "搜索用户名称"
+  },
+  conn: {
+    "connNum": "连接数量",
+    "createName": "请先创建名称",
+    "projectLink": "项目地址",
+    "customPeerID": "使用自定义 Peer ID",
+    "customPeerIDInfo": "不要使用太简单的 ID，防止冲突",
+    "customPeerIDInput": "输入自定义 Peer ID",
+    "confirmName": "确认名称",
+    "yourName": "你的名称",
+    "nameEmpty": "名称不能为空，确认后无法修改，如果确认后长时间没有Peer ID，请重新刷新页面",
+    "addUser": "添加用户",
+    "userID": "用户 Peer ID",
+    "connected": "已连接",
+    "copy": "复制",
+    "online": "在线",
+    "offline": "离线",
+    "disconnect": "断开连接",
+    "more": "更多用户",
+    "getMore": "获取更多用户",
+    "connect": "连接",
+    "copied":  "已复制",
+    "idCopied": "Peer ID 已复制到剪贴板",
+    "copyFailed": "复制失败",
+    "disconnectConfirm": "确认断开连接",
+    "disconnectUser": "确认要断开与以下用户的连接吗：",
+    "confirm": "确认",
+    "cancel": "取消"
+  },
+  video: {
+    "local": "本地视频",
+    "remote": "远程视频",
+    "selectUser": "选择要视频通话的用户",
+    "start": "开始视频通话",
+    "stop": "结束视频通话"
+  },
+  noti: {
+    "getVideoRequest": "收到视频通话请求",
+    "isAccept": "是否接收请求？",
+    "accept": "接受",
+    "reject": "拒绝",
+    "callFail": "无法发起视频通话",
+    "selfError": "不能与自己进行视频通话",
+    "callStart": "视频通话已开始",
+    "waitCall": "正在等待对方接听...",
+    "callError": "启动视频通话失败",
+    "mediaIssue": "请确保已授予摄像头和麦克风权限",
+    "callEnd": "视频通话已结束",
+    "acceptError": "无法接受视频通话",
+    "connectSuccess": "连接成功",
+    "connectUser": "与该 ID 的用户成功连接：",
+    "disconnect": "已断开连接",
+    "disconnectUser": "与该用户断开连接：",
+    "connectError": "连接错误",
+    "connectErrorUser": "与该用户的连接出现错误："
+  }
 }
