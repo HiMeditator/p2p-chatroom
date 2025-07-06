@@ -89,6 +89,7 @@
       :style="floatingVideo.style"
       @mousedown="startDrag"
       @touchstart="startDrag"
+      @touchstart.passive="false"
     >
       <video 
         ref="floatingVideoElement"
@@ -100,8 +101,9 @@
         <a-button 
           type="text" 
           size="small"
-          @click="closeFloating"
-          class="control-btn"
+          @click="handleCloseClick"
+          @touchstart.stop="handleCloseClick"
+          class="control-btn close-btn"
         >
           <template #icon>
             <CloseOutlined />
@@ -243,8 +245,20 @@ function closeFloating() {
   floatingVideo.value.show = false
 }
 
+// 防止事件冒泡到拖拽处理
+function handleCloseClick(event: Event) {
+  event.stopPropagation()
+  closeFloating()
+}
+
 function startDrag(event: MouseEvent | TouchEvent) {
   if (!floatingVideo.value.show || isResizing) return
+  
+  // 检查是否点击在控制按钮上
+  const target = event.target as HTMLElement
+  if (target.closest('.floating-controls') || target.closest('.close-btn')) {
+    return
+  }
   
   isDragging = true
   const rect = (event.target as HTMLElement).getBoundingClientRect()
@@ -605,6 +619,39 @@ async function acceptCall(call: any) {
   width: 24px;
   height: 24px;
   font-size: 12px;
+}
+
+.floating-controls .close-btn {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+  background: rgba(255, 0, 0, 0.2) !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease;
+}
+
+.floating-controls .close-btn:hover {
+  background: rgba(255, 0, 0, 1) !important;
+  transform: scale(1.1);
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .floating-controls .close-btn {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 12px;
+    touch-action: manipulation;
+  }
+  
+  .floating-controls {
+    top: 8px;
+    right: 8px;
+  }
+  
+  .floating-video {
+    touch-action: pan-x pan-y;
+  }
 }
 
 .resize-handle {
