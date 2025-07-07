@@ -208,6 +208,12 @@ export const useConnectionStore = defineStore('connection', () => {
     }
   }
 
+  function disconnectAll(){
+    for(const item of connectList.value){
+      disconnect(item.id)
+    }
+  }
+
   return {
     connectList,
     friendNodeList,
@@ -217,6 +223,7 @@ export const useConnectionStore = defineStore('connection', () => {
     getFriendNodeList,
     sendFriendNodeList,
     addFriendNode,
-    disconnect
+    disconnect,
+    disconnectAll
   }
 })

@@ -13,7 +13,7 @@
 
 ## 🌐 在线访问
 
-访问 [p2p-chatroot](https://himeditator.github.io/p2p-chatroom/) 体验应用。
+访问 [p2p-chatroom](https://himeditator.github.io/p2p-chatroom/) 体验应用。
 
 ## ✨ 特性
 

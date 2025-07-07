@@ -13,7 +13,7 @@
 
 ## 🌐 Online Access
 
-Visit [p2p-chatroot](https://himeditator.github.io/p2p-chatroom/) to experience the application.
+Visit [p2p-chatroom](https://himeditator.github.io/p2p-chatroom/) to experience the application.
 
 ## ✨ Features
 

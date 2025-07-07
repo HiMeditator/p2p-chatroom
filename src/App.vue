@@ -12,6 +12,13 @@
 <script setup lang="ts">
 import ChatView from "./views/ChatView.vue";
 import UtilsView from "./views/UtilsView.vue";
+import { useConnectionStore } from "./stores/connection";
+
+window.addEventListener('beforeunload', handleUnload);
+
+function handleUnload() {
+  useConnectionStore().disconnectAll();
+}
 </script>
 
 <style scoped>
